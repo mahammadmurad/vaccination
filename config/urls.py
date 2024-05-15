@@ -22,14 +22,13 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('center/', include('center.urls', namespace='center')),
-    # path('vaccine/', include('vaccine.urls')),
+    path("admin/", admin.site.urls),
+    path("", views.index, name="index"),
+    path("center/", include("center.urls", namespace="center")),
+    path("vaccine/", include("vaccine.urls", namespace="vaccine")),
     # path('campaign/', include('campaign.urls')),
     # path('vaccination/', include('vaccination.urls')),
     # path('user/', include('user.urls')),
-    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
