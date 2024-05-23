@@ -26,7 +26,7 @@
         </thead>
 
         <tbody>
-            {% for vaccine in vaccine_list %}
+            {% for vaccine in page_obj %}
             <tr>
                 <td>{{vaccine.name|upper}}</td>
                 <td>{{ vaccine.number_of_doses }}</td>
@@ -38,5 +38,6 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include 'components/pagination.html' %}
 </div>
 {% endblock content %}

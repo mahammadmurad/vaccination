@@ -6,11 +6,15 @@ from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.core.paginator import Paginator
 
 def center_list(request):
-    centers = Center.objects.all()
+    centers = Center.objects.all().order_by('name')
+    paginator = Paginator(centers, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'centers': centers
+        'page_obj': page_obj  
     }
     return render(request, 'center/center_list.html', context)
 
@@ -74,6 +78,8 @@ def delete_center(request, pk):
 class StorageList(ListView):
     queryset = Storage.objects.all()
     template_name = 'storage/storage_list.html'
+    ordering = ['-id']
+    paginate_by = 2
 
     def get_queryset(self):
         return super().get_queryset().filter(center_id=self.kwargs['center_id'])

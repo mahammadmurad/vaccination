@@ -7,44 +7,30 @@ from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 
-# class VaccineList(View):
-#     def get(self, request):
-#         vaccine_list = Vaccine.objects.all()
-#         context = {
-#             'vaccine_list':vaccine_list
-#         }
-#         return render(request, 'vaccine/vaccine_list.html', context)
-
-
-class VaccineList(ListView):
-    model = Vaccine
-    template_name = "vaccine/vaccine_list.html"
-    context_object_name = "vaccine_list"
+class VaccineList(View):
+    def get(self, request):
+        vaccine_list = Vaccine.objects.all().order_by('name')
+        paginator = Paginator(vaccine_list, 2)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        context = {"page_obj": page_obj}
+        return render(request, 'vaccine/vaccine_list.html', context)
 
 
-# class VaccineDetail(View):
-#     def get(self, request, pk):
-#         try:
-#             vaccine_detail = Vaccine.objects.get(pk=pk)
-#         except Vaccine.DoesNotExist:
-#             raise Http404('Vaccine does not exist')
-
-#         context = {"vaccine_detail": vaccine_detail}
-#         return render(request, "vaccine/vaccine_detail.html", context)
-
-
-class VaccineDetail(DetailView):
-    model = Vaccine
-    template_name = "vaccine/vaccine_detail.html"
-    context_object_name = "vaccine_detail"
-
-    def get_object(self):
-        pk = self.kwargs.get('pk')
+class VaccineDetail(View):
+    def get(self, request, pk):
         try:
-            return Vaccine.objects.get(pk=pk)
+            vaccine_detail = Vaccine.objects.get(pk=pk)
         except Vaccine.DoesNotExist:
             raise Http404('Vaccine does not exist')
+
+        context = {"vaccine_detail": vaccine_detail}
+        return render(request, "vaccine/vaccine_detail.html", context)
+
+
+
 
 class CreateVaccine(View):
     form_class = VaccineForm
