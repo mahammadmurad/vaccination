@@ -54,13 +54,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=30,
         null=True,
         blank=True,
-        choices=Document_Choices,
-        null=True,
-        blank=True,
+        choices=Document_Choices
     )
     identity_document_number = models.CharField(max_length=255, null=True, blank=True)
     photo = models.ImageField(null=True, upload_to='profile')
-    date_joined = models.DateTimeField(default=timezone.now())
+    date_joined = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
     is_email_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -70,7 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["first_name", "last_name" ]
 
+    objects = UserManager()
+    
     def get_full_name(self):
         return f"{self.first_name}  {self.last_name}"
-    
-    objects = UserManager()
