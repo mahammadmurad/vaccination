@@ -28,7 +28,7 @@ urlpatterns = [
     path("vaccine/", include("vaccine.urls", namespace="vaccine")),
     # path('campaign/', include('campaign.urls')),
     # path('vaccination/', include('vaccination.urls')),
-    # path('user/', include('user.urls')),
+    path('accounts/', include('user.urls', namespace="user")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
