@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import get_user_model
+from django.forms import ModelForm
 
 User = get_user_model()
 
@@ -46,3 +47,21 @@ class ChangePasswordForm(PasswordChangeForm):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class ProfileUpdateForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProfileUpdateForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs["class"] = "form-control"
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "gender",
+            "photo",
+            "identity_document_type",
+            "identity_document_number",
+        ]

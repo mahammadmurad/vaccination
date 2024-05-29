@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
-from user.forms import SignupForm, LoginForm, ChangePasswordForm
+from user.forms import SignupForm, LoginForm, ChangePasswordForm, ProfileUpdateForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout, update_session_auth_hash
@@ -66,9 +66,25 @@ def change_password(request):
     return render(request, 'user/change_password.html',context)
 
 
-def profile_view(request):
+def profile_view(request): 
     context = {
         'user': request.user
     }
     
     return render(request, 'user/profile_view.html', context)
+
+
+def profile_update(request):
+    if request.method=='POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully')
+            return HttpResponseRedirect(reverse('user:profile_view'))
+        messages.error(request,'Please enter valid data!')
+        return render(request, "user/profile_update.html", {'form': form})
+    context = {
+        'form': ProfileUpdateForm(instance=request.user)
+    }
+
+    return render(request, 'user/profile_update.html', context)
