@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.urls import reverse
-from user.forms import SignupForm, LoginForm
+from user.forms import SignupForm, LoginForm, ChangePasswordForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate, login as user_login, logout as user_logout
+from django.contrib.auth import authenticate, login as user_login, logout as user_logout, update_session_auth_hash
 
 def signup(request):
     if request.method == 'POST':
@@ -48,3 +48,27 @@ def logout(request):
     user_logout(request)
     messages.info(request, 'Logout Successfully')
     return HttpResponseRedirect(reverse("user:login"))
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Change Password Successfully')
+            return HttpResponseRedirect(reverse('index'))
+        messages.error(request, 'Change Password Failed')
+        return render(request, "user/change_password.html", {'form': form})
+    context = {
+        'form': ChangePasswordForm(request.user)
+    }
+    return render(request, 'user/change_password.html',context)
+
+
+def profile_view(request):
+    context = {
+        'user': request.user
+    }
+    
+    return render(request, 'user/profile_view.html', context)
