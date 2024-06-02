@@ -30,7 +30,7 @@
                             {% if user.is_email_verified %}
                             <i>(Email Verified)</i>
                             {% else %}
-                            (<a href="#">Verify Email</a>)
+                            (<a href="{% url 'user:verify-email' %}">Verify Email</a>)
                             {% endif %}
                         </div>
                     </div>

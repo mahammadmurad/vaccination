@@ -2,8 +2,15 @@ from django.shortcuts import render
 from django.urls import reverse
 from user.forms import SignupForm, LoginForm, ChangePasswordForm, ProfileUpdateForm
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout, update_session_auth_hash
+from user.email import send_email_verification
+from django.contrib.auth import get_user_model
+from user.utils import EmailVerificationTokenGenerator
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+
+User = get_user_model()
 
 def signup(request):
     if request.method == 'POST':
@@ -88,3 +95,26 @@ def profile_update(request):
     }
 
     return render(request, 'user/profile_update.html', context)
+
+
+def email_verification_request(request):
+    if not request.user.is_email_verified:
+        send_email_verification(request, request.user.id)
+        return HttpResponse('Email verification link sent to your email address')
+    return HttpResponseForbidden('EMail already verified')
+
+def email_verifier(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid) 
+    except:
+        user = None
+
+    if user == request.user:
+        if EmailVerificationTokenGenerator.check_token(user, token):
+            user.is_email_verified = True
+            user.save() 
+            messages.success(request, 'Email verified')
+            return HttpResponseRedirect(reverse("user:profile_view"))
+        return HttpResponseBadRequest('Invalid request')
+    return HttpResponseForbidden("You dont have permission to user this link")
