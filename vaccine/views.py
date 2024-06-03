@@ -9,7 +9,11 @@ from django.views.generic.detail import DetailView
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 
+
+@method_decorator(login_required , name='dispatch')
 class VaccineList(View):
     def get(self, request):
         vaccine_list = Vaccine.objects.all().order_by('name')
@@ -20,6 +24,7 @@ class VaccineList(View):
         return render(request, 'vaccine/vaccine_list.html', context)
 
 
+@method_decorator(login_required, name="dispatch")
 class VaccineDetail(View):
     def get(self, request, pk):
         try:
@@ -31,6 +36,8 @@ class VaccineDetail(View):
         return render(request, "vaccine/vaccine_detail.html", context)
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required('vaccine.add_vaccine'), name="dispatch")
 class CreateVaccine(View):
     form_class = VaccineForm
     template_name = "vaccine/create_vaccine.html"
@@ -54,6 +61,8 @@ class CreateVaccine(View):
         return render(request, self.template_name, {"form": form})
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("vaccine.change_vaccine"), name="dispatch")
 class UpdateVaccine(View):
     form_class = VaccineForm
     template_name = "vaccine/update_vaccine.html"
@@ -76,6 +85,8 @@ class UpdateVaccine(View):
         return render(request, self.template_name, {"form": form})
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(permission_required("vaccine.delete_vaccine"), name="dispatch")
 class DeleteVaccine(View):
     template_name = "vaccine/delete_vaccine.html"
 
