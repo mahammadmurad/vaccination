@@ -30,7 +30,7 @@ def center_detail(request, pk):
     return render(request, "center/center_detail.html", context)
 
 @login_required
-@permission_required('center:add_center', raise_exception=True)
+@permission_required('center.add_center', raise_exception=True)
 def create_center(request):
 
     if request.method == 'POST':
@@ -50,7 +50,7 @@ def create_center(request):
 
 
 @login_required
-@permission_required("center:change_center", raise_exception=True)
+@permission_required("center.change_center", raise_exception=True)
 def update_center(request, pk):
     try:
         center = Center.objects.get(pk=pk)
@@ -71,7 +71,7 @@ def update_center(request, pk):
 
 
 @login_required
-@permission_required("center:delete_center", raise_exception=True)
+@permission_required("center.delete_center", raise_exception=True)
 def delete_center(request, pk):
     try:
         center = Center.objects.get(pk=pk)

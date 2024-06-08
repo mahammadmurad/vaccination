@@ -26,7 +26,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("center/", include("center.urls", namespace="center")),
     path("vaccine/", include("vaccine.urls", namespace="vaccine")),
-    # path('campaign/', include('campaign.urls')),
+    path("campaign/", include("campaign.urls", namespace="campaign")),
     # path('vaccination/', include('vaccination.urls')),
     path("accounts/", include("user.urls", namespace="user")),
     path(

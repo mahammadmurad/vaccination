@@ -62,7 +62,9 @@ class CreateVaccine(View):
 
 
 @method_decorator(login_required, name="dispatch")
-@method_decorator(permission_required("vaccine.change_vaccine"), name="dispatch")
+@method_decorator(
+    permission_required("vaccine.change_vaccine", raise_exception=True), name="dispatch"
+)
 class UpdateVaccine(View):
     form_class = VaccineForm
     template_name = "vaccine/update_vaccine.html"
@@ -86,7 +88,9 @@ class UpdateVaccine(View):
 
 
 @method_decorator(login_required, name="dispatch")
-@method_decorator(permission_required("vaccine.delete_vaccine"), name="dispatch")
+@method_decorator(
+    permission_required("vaccine.delete_vaccine", raise_exception=True), name="dispatch"
+)
 class DeleteVaccine(View):
     template_name = "vaccine/delete_vaccine.html"
 
