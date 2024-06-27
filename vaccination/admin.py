@@ -7,6 +7,6 @@ class CustomVaccinationAdmin(admin.ModelAdmin):
     list_filter = ["is_vaccinated"]
     readonly_fields = ["patient","campaign",  "is_vaccinated", 'updated_by', 'date']
     change_form_template = 'admin/change-vaccination.html'
-    
+
 
 admin.site.register(Vaccination, CustomVaccinationAdmin)
